@@ -7,6 +7,15 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
         self.sum_hw = 0
+    def rate_lc(self, lector, course, grade):
+        if isinstance(lector, Lecturer) and course in lector.courses_attached and course in self.courses_in_progress:
+
+            if course in lector.grade_book:
+                lector.grade_book[course] += [grade]
+            else:
+                lector.grade_book[course] = [grade]
+        else:
+            return 'Ошибка!'
     def _get_avg_hw_grade(self):
         self.sum_hw += sum(self.grades['Python']) / len(self.grades['Python'])
         return self.sum_hw
@@ -16,15 +25,17 @@ class Student:
     def __delattr__(self, other):
         self._get_avg_hw_grade()
         return self.sum_hw < other.sum_hw
-    def rate_lc(self, lector, course, grade):
-        if isinstance(lector, Lecturer) and course in lector.courses_attached and course in self.courses_in_progress:
-
-            if course in lector.grade_book:
-                lector.grade_book[course] += [grade]
-            else:
-                lector.grade_book[course] = [grade]
-        else:
-            return 'Ошибка!'    
+    student_list = [
+            { "name": "Ruoy", "surname": "Eman", "gender": "M", "course": "Python", "grade": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]},
+            { "name": 'Bob', "surname": "Singer", "gender": "M", "course": "Python", "grade": [10, 5, 7, 9, 10, 10, 4, 9, 8, 6]}
+    ]
+    def get_avg_hw_grade(students, course = 'Python'):
+        sum_hw = 0
+        for student in students:
+            if student['course'] == course:    
+                sum_hw += sum(student['grade']) / len(student['grade'])
+        return round(sum_hw / len(students), 2)      
+    print(f'Средняя оценка всех студентов: {get_avg_hw_grade(student_list)}')    
 class Mentor:
     def __init__(self, name, surname):
         self.name = name
@@ -65,7 +76,17 @@ class Lecturer(Mentor):
     def __delattr__(self, other):
         self._get_avg_lc_grade()
         return self.sum_gd > other.sum_gd 
-
+    lectures_list = [
+        { "name": "Some", "surname": "Buddy", "course": "Python", "grade": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]},
+        { "name": "Margo", "surname": "Buddy", "course": "Python", "grade": [10, 10, 4, 6, 10, 8, 7, 7, 10, 9]}
+]    
+    def get_avg_hw_grade(lecturer, course = 'Python'):
+        sum_lc = 0
+        for lector in lecturer:
+            if lector['course'] == course:    
+                sum_lc += sum(lector['grade']) / len(lector['grade'])
+        return round(sum_lc / len(lecturer), 2)      
+    print (f'Средняя оценка всех лекторов: {get_avg_hw_grade(lectures_list)}')
 some_student = Student('Ruoy', 'Eman', 'your_gender')
 some_student.courses_in_progress += ['Python', 'Git']
 some_student.finished_courses += ['Введение в программирование']
@@ -94,6 +115,17 @@ some_reviewer.rate_hw(some_student, 'Python', 10)
 some_reviewer.rate_hw(some_student, 'Python', 10)
 some_reviewer.rate_hw(some_student, 'Python', 10)
 
+some_reviewer.rate_hw(other_student, 'Python', 10)
+some_reviewer.rate_hw(other_student, 'Python', 5)
+some_reviewer.rate_hw(other_student, 'Python', 7)
+some_reviewer.rate_hw(other_student, 'Python', 9)
+some_reviewer.rate_hw(other_student, 'Python', 10)
+some_reviewer.rate_hw(other_student, 'Python', 10)
+some_reviewer.rate_hw(other_student, 'Python', 4)
+some_reviewer.rate_hw(other_student, 'Python', 9)
+some_reviewer.rate_hw(other_student, 'Python', 8)
+some_reviewer.rate_hw(other_student, 'Python', 6)
+
 some_student.rate_lc(some_lecturer, 'Python', 10)
 some_student.rate_lc(some_lecturer, 'Python', 10)
 some_student.rate_lc(some_lecturer, 'Python', 10)
@@ -104,7 +136,22 @@ some_student.rate_lc(some_lecturer, 'Python', 10)
 some_student.rate_lc(some_lecturer, 'Python', 10)
 some_student.rate_lc(some_lecturer, 'Python', 10)
 some_student.rate_lc(some_lecturer, 'Python', 10)
+
+some_student.rate_lc(other_lecturer, 'Python', 10)
+some_student.rate_lc(other_lecturer, 'Python', 10)
+some_student.rate_lc(other_lecturer, 'Python', 4)
+some_student.rate_lc(other_lecturer, 'Python', 6)
+some_student.rate_lc(other_lecturer, 'Python', 10)
+some_student.rate_lc(other_lecturer, 'Python', 8)
+some_student.rate_lc(other_lecturer, 'Python', 7)
+some_student.rate_lc(other_lecturer, 'Python', 7)
+some_student.rate_lc(other_lecturer, 'Python', 10)
+some_student.rate_lc(other_lecturer, 'Python', 9)
  
+ 
+print(other_student)
+print(other_lecturer)
+print(other_reviewer)
 print(some_reviewer)
 print(some_lecturer)
 print(some_student)
