@@ -22,7 +22,9 @@ class Student:
     def __str__(self):
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за домашние задания: {self._get_avg_hw_grade()}\nКурсы в процессе изучения: {", ".join(self.courses_in_progress)}\nЗавершенные курсы: {", ".join(self.finished_courses)}'
         return res
-    def __delattr__(self, other):
+    def __lt__(self, other):
+        if other.__class__ is not self.__class__:
+            return NotImplemented
         self._get_avg_hw_grade()
         return self.sum_hw < other.sum_hw
     student_list = [
@@ -73,9 +75,11 @@ class Lecturer(Mentor):
     def __str__(self):
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self._get_avg_lc_grade()}'
         return res
-    def __delattr__(self, other):
+    def __lt__(self, other):
+        if other.__class__ is not self.__class__:
+            return NotImplemented
         self._get_avg_lc_grade()
-        return self.sum_gd > other.sum_gd 
+        return self.sum_gd < other.sum_gd 
     lectures_list = [
         { "name": "Some", "surname": "Buddy", "course": "Python", "grade": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]},
         { "name": "Margo", "surname": "Buddy", "course": "Python", "grade": [10, 10, 4, 6, 10, 8, 7, 7, 10, 9]}
@@ -155,5 +159,5 @@ print(other_reviewer)
 print(some_reviewer)
 print(some_lecturer)
 print(some_student)
-print(some_lecturer.__delattr__(other_lecturer))
-print(some_student.__delattr__(other_student))
+print(some_lecturer < other_lecturer)
+print(some_student < other_student)
